@@ -1,4 +1,4 @@
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, Trash2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useGetProduct from "../hooks/useGetProduct";
@@ -7,12 +7,12 @@ import { formatCurrency } from "../util/Money";
 const Cart = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useLocalStorage("cart", []);
-  const products = useGetProduct();
+  const {products} = useGetProduct({arg: ""});
 
   // Get full product info for items in cart
   const cartItems = cart
     .map((item: any) => {
-      const product = products.find((p) => p.id === item.id);
+      const product = products.find((p) => p._id === item.id);
       return product ? { ...product, quantity: item.quantity } : null;
     })
     .filter(Boolean);
@@ -85,8 +85,8 @@ const Cart = () => {
                 <tr key={index} className="border-b border-b-gray-800/30">
                   <td className="p-2">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => handleRemove(item.id)}>
-                        <X className="text-red-600" />
+                      <button onClick={() => handleRemove(item.id)} className="cursor-pointer">
+                        <Trash2 />
                       </button>
                       <div className="w-[50px] h-[50px]">
                         <img
@@ -106,14 +106,14 @@ const Cart = () => {
                   <td className="p-2 text-sm text-center">
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={() => handleQuantityChange(item.id, -1)}
+                        onClick={() => handleQuantityChange(item._id, -1)}
                         className="px-2 py-1 bg-gray-300"
                       >
                         -
                       </button>
                       <span>{item.quantity}</span>
                       <button
-                        onClick={() => handleQuantityChange(item.id, 1)}
+                        onClick={() => handleQuantityChange(item._id, 1)}
                         className="px-2 py-1 bg-gray-300"
                       >
                         +

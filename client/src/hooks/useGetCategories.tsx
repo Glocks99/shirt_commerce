@@ -1,24 +1,30 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+type catType = {
+  _id: string,
+  name: string
+}
 
 const useGetCategories = () => {
-  const [cat, setCat] = useState<string[] | []>([]);
+  const [cat, setCat] = useState<catType[]>([]);
   const getCategories = async () => {
     try {
-      const { data } = await axios.get("http://localhost:3001/products");
-      const newCat: string[] = [];
-      if (data) {
-        data.map((item: any) => newCat.push(...item.category));
-        setCat([...new Set(newCat)].sort());
+      const { data } = await axios.get("http://localhost:3000/api/categories/");
+      
+      if(data){
+        setCat(data)
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
   useEffect(() => {
     getCategories();
   }, []);
+
   return [cat, setCat] as const;
 };
 

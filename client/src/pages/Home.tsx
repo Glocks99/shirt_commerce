@@ -1,38 +1,15 @@
-import { ShoppingCart } from "lucide-react";
+import { Loader} from "lucide-react";
 import Carousel from "../components/Carousel";
 import { ProductCard } from "../components/ProductCard";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import Feat_Banner from "./Feat_Banner";
+import useGetProduct from "../hooks/useGetProduct";
 
-export type ProductType = {
-  id: string;
-  image: string;
-  name: string;
-  desc: string;
-  priceCents: number;
-  category: string[];
-  flag: string;
-};
 
 const Home = () => {
-  const [products, setProducts] = useState<ProductType[]>([]);
 
-  const bestSellers = products.filter((product) => product.flag === "Best");
+  const {products, loading} = useGetProduct({arg: ""})
 
-  const getProduct = async () => {
-    try {
-      const { data } = await axios.get("http://localhost:3001/products");
-      if (data) {
-        setProducts(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getProduct();
-  }, []);
+  const filteredProd = products.filter(item => !item.isFeatured )
 
   return (
     <div>
@@ -43,46 +20,25 @@ const Home = () => {
         <h1 className="mt-4 font-bold text-3xl">New Arrivals</h1>
 
         <div className="mt-[50px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px]">
-          {products.map((product, index) => (
-            <ProductCard tags={index} product={product} key={product.id} />
-          ))}
+          {loading ? (
+            <div className="flex flex-col items-center justify-center col-span-4">
+            <Loader className=" duration-100 animate-spin" />
+            <p>Loading products...</p>
+          </div>
+          ): products.length === 0 ? (
+            <div className="flex flex-col items-center gap-2.5 justify-center w-full col-span-4">
+            <img src="/assets/void.svg" className="h-[200px]" alt="" />
+            <p className="text-gray-600 text-xl text-center">No products found...</p>
+          </div>
+          ): (
+            filteredProd.map((product, index) => (
+              <ProductCard tags={index} product={product} key={product._id} />
+            ))
+          )}
         </div>
       </div>
 
-      {/* Discount Section */}
-      <div className="px-4 relative sm:px-10 py-6 mt-24 border rounded-lg bg-white shadow-sm">
-        <div className="w-full sm:w-1/2 flex flex-col gap-4 z-10">
-          <h1 className="text-2xl font-bold text-gray-800">On Discount</h1>
-          <p className="text-sm text-gray-600 line-clamp-3">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            Repellendus, accusamus iusto. Pariatur culpa saepe, quae totam nisi
-            quam enim earum cupiditate rem. Explicabo alias et autem adipisci
-            suscipit, perferendis quisquam.
-          </p>
-          <button className="flex items-center gap-2 px-4 py-2 w-fit bg-gray-800 text-white rounded hover:bg-gray-700 transition">
-            Add to cart <ShoppingCart className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="absolute h-full w-full top-0 right-0">
-          <img
-            src="/assets/disImg.png"
-            className="h-full w-full object-contain  object-right"
-            alt=""
-          />
-        </div>
-      </div>
-
-      {/* Best Sellers */}
-      <div className="px-[16px] sm:px-[40px]">
-        <h1 className="mt-4 font-bold text-3xl">Best Sellers</h1>
-
-        <div className="mt-[50px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px]">
-          {bestSellers.map((product, index) => (
-            <ProductCard tags={index} product={product} key={product.id} />
-          ))}
-        </div>
-      </div>
+      <Feat_Banner />
     </div>
   );
 };

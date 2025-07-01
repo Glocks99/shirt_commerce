@@ -1,4 +1,7 @@
+import { useAppContext } from "../context/AppContext";
+
 const Profile = () => {
+  const {user} = useAppContext()
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
       <h1 className="text-3xl font-bold mb-6">My Profile</h1>
@@ -11,8 +14,8 @@ const Profile = () => {
             className="w-20 h-20 rounded-full object-cover border"
           />
           <div>
-            <p className="text-xl font-semibold">John Doe</p>
-            <p className="text-gray-600">john.doe@example.com</p>
+            <p className="text-xl font-semibold">{user?.userData?.firstName}</p>
+            <p className="text-gray-600">{user?.userData?.email}</p>
           </div>
         </div>
 
@@ -26,7 +29,7 @@ const Profile = () => {
               </label>
               <input
                 type="text"
-                defaultValue="John Doe"
+                defaultValue= {`${user?.userData?.firstName} ${user?.userData?.lastName}` || ""}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
               />
             </div>
@@ -37,7 +40,7 @@ const Profile = () => {
               </label>
               <input
                 type="email"
-                defaultValue="john.doe@example.com"
+                placeholder= {user?.userData?.email || ""}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
               />
             </div>
@@ -48,7 +51,7 @@ const Profile = () => {
               </label>
               <input
                 type="tel"
-                placeholder="+233 123 456 789"
+                placeholder={user?.userData?.contact || ""}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
               />
             </div>
@@ -59,7 +62,7 @@ const Profile = () => {
               </label>
               <input
                 type="text"
-                placeholder="123 Accra Street, Ghana"
+                placeholder={user?.userData?.address || "Not set yet"}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
               />
             </div>

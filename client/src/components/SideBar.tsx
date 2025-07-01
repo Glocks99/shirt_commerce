@@ -3,7 +3,7 @@ import { useAppContext } from "../context/AppContext";
 import { Link, useNavigate } from "react-router-dom";
 
 const SideBar = () => {
-  const { isOpen, setIsOpen } = useAppContext();
+  const { isOpen, setIsOpen, user } = useAppContext();
   const navigate = useNavigate();
 
   return (
@@ -71,7 +71,8 @@ const SideBar = () => {
         </div>
 
         {/* Auth Buttons */}
-        <div className="border-t border-t-black/25 pt-4 flex flex-col gap-2">
+        {!user.isLoggedIn && (
+          <div className="border-t border-t-black/25 pt-4 flex flex-col gap-2">
           <button
             onClick={() => navigate("/login")}
             className="w-full py-2 px-4 border border-black/25  rounded hover:bg-gray-100"
@@ -85,6 +86,8 @@ const SideBar = () => {
             Sign Up
           </button>
         </div>
+        )}
+        
         <div className="border-t border-t-black/25 text-sm text-center py-4 px-4">
           © {new Date().getFullYear()} Yolo's collections. All rights reserved.
         </div>

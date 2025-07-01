@@ -3,9 +3,9 @@ const Footer = () => {
     <div className="relative bg-gray-900 text-gray-300 mt-16">
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 sm:grid-cols-2 gap-10">
         {/* Logo & About */}
-        <div>
-          <div className="h-[50px] w-[50px] flex items-center gap-2 text-white text-xl font-bold mb-3">
-            <p>Yolo's Collection</p>
+        <div className="flex flex-col">
+          <div className="h-[50px] w-full flex items-center gap-2 text-white text-xl font-bold mb-3">
+            <img src="assets/logo.png" className="w-[200px] sm:w-full" alt="" />
           </div>
           <p className="text-sm leading-relaxed">
             Your ultimate hub for quality cloths, designers, and fashion waears

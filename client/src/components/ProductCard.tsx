@@ -4,14 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../util/Money";
 import { useAppContext } from "../context/AppContext";
 
-type ProductType = {
-  id: string;
+export type ProductType = {
+  _id: string;
   image: string;
   name: string;
-  desc: string;
+  description: string;
   priceCents: number;
-  category: string[];
-  flag: string;
+  category: {name: string};
+  richDescription: string,
+  isFeatured: boolean;
+  discount: boolean,
+  discountPercentage: number
 };
 
 export const ProductCard = ({
@@ -32,15 +35,15 @@ export const ProductCard = ({
   const addToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    const existingItem = cart.find((item) => item.id === product.id);
+    const existingItem = cart.find((item) => item.id === product._id);
 
     if (existingItem) {
       const updatedCart = cart.map((item) =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        item.id === product._id ? { ...item, quantity: item.quantity + 1 } : item
       );
       setCart(updatedCart);
     } else {
-      setCart([...cart, { id: product.id, quantity: 1 }]);
+      setCart([...cart, { id: product._id, quantity: 1 }]);
     }
   };
 
@@ -51,14 +54,32 @@ export const ProductCard = ({
     >
       {/* Product Tag */}
       <span className="absolute top-1.5 left-1.5 p-1 px-2.5 rounded bg-gray-500 text-white text-xs z-10">
-        {product.flag}
+        {product.category.name}
       </span>
 
-      {/* Action Panel */}
+      {product.discount && (
+
+      <span className="absolute top-1.5 right-1.5 p-1 px-2.5 rounded bg-gray-500 text-white text-xs z-10">
+        Discount: {product.discountPercentage}%
+      </span>
+      )}
+
+      {/* Product Image */}
+      <div className="flex-1 z-0 overflow-hidden">
+        <img
+          src={product.image}
+          className="h-full w-full object-cover"
+          alt={product.name}
+        />
+      </div>
+
+      {/* Product Info */}
+      <div className="h-fit p-3.5 bg-gray-200 relative transition-transform duration-500 ease-in-out">
+        {/* Action Panel */}
       <div
         className={`absolute left-0 transition-transform duration-500 ease-in-out ${
-          openTag === tags ? "translate-y-[256px]" : "translate-y-[400px]"
-        } border-b border-gray-700 bg-gray-200 w-full px-3.5 flex flex-col text-sm z-20`}
+          openTag === tags ? "-translate-y-full" : "translate-y-full"
+        } border-b border-gray-700 bg-gray-200 w-full px-3.5 flex flex-col text-sm`}
       >
         <button
           className="flex text-xs border-b border-gray-600/35 items-center gap-2 justify-end py-1.5"
@@ -71,7 +92,7 @@ export const ProductCard = ({
           className="flex text-xs border-b border-gray-600/35 items-center gap-2 justify-end py-1.5"
           onClick={(e) => {
             e.stopPropagation();
-            navigate(`/product/${product.id}`);
+            navigate(`/product/${product._id}`);
           }}
         >
           View details <File size={16} />
@@ -88,22 +109,11 @@ export const ProductCard = ({
         </button>
       </div>
 
-      {/* Product Image */}
-      <div className="flex-1 z-0 overflow-hidden">
-        <img
-          src={product.image}
-          className="h-full w-full object-cover"
-          alt={product.name}
-        />
-      </div>
-
-      {/* Product Info */}
-      <div className="h-fit p-3.5 bg-gray-200 z-20">
-        <div className="flex items-center justify-between gap-1.5 font-semibold">
+        <div className="flex items-center justify-between z-20 gap-1.5 font-semibold">
           <p>{product.name}</p>
           <p>¢{formatCurrency(product.priceCents)}</p>
         </div>
-        <p className="text-xs text-gray-600">{product.desc}</p>
+        <p className="text-xs text-gray-600">{product.description}</p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type Dispatch,
   type ReactNode,
@@ -18,12 +19,18 @@ type ContextType = {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   cart: CartType[];
   setCart: Dispatch<SetStateAction<CartType[]>>;
+  user: {
+    isLoggedIn: boolean;
+    userData?: Record<string, any>;
+  };
+  setUser: Dispatch<SetStateAction<{ isLoggedIn: boolean; userData?: Record<string, any> }>>;
+  checkIsUserLoggedIn: () => void;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-// ✅ Capitalized context name
 export const AppContextProvider = createContext<ContextType | null>(null);
 
-// ✅ Custom hook to access context
 export function useAppContext() {
   const context = useContext(AppContextProvider);
   if (!context) {
@@ -32,15 +39,49 @@ export function useAppContext() {
   return context;
 }
 
-// ✅ Main provider component
 const AppContext = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<{ isLoggedIn: boolean; userData?: Record<string, any> }>({
+    isLoggedIn: false,
+    userData: undefined,
+  });
+  const [isLoading, setIsLoading] = useState(false)
 
-  // ✅ Typed useLocalStorage
   const [cart, setCart] = useLocalStorage<CartType[]>("cart", []);
 
+  const checkIsUserLoggedIn = () => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser({
+        isLoggedIn: true,
+        userData: JSON.parse(userData),
+      });
+    } else {
+      setUser({
+        isLoggedIn: false,
+        userData: undefined,
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkIsUserLoggedIn();
+  }, []);
+
   return (
-    <AppContextProvider.Provider value={{ isOpen, setIsOpen, cart, setCart }}>
+    <AppContextProvider.Provider
+      value={{
+        isOpen,
+        setIsOpen,
+        cart,
+        setCart,
+        user,
+        setUser,
+        checkIsUserLoggedIn,
+        isLoading,
+        setIsLoading
+      }}
+    >
       {children}
     </AppContextProvider.Provider>
   );

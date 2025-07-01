@@ -1,18 +1,9 @@
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, ArrowLeft } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { formatCurrency } from "../util/Money";
-
-type ProductType = {
-  id: string;
-  image: string;
-  name: string;
-  desc: string;
-  priceCents: number;
-  category: string[];
-  flag: string;
-};
+import type { ProductType } from "../components/ProductCard";
 
 const Product = () => {
   const { id } = useParams();
@@ -21,7 +12,7 @@ const Product = () => {
 
   const getSingleProduct = async () => {
     try {
-      const { data } = await axios.get(`http://localhost:3001/products/${id}`);
+      const { data } = await axios.get(`http://localhost:3000/api/products/${id}`);
       if (data) {
         setProduct(data);
       }
@@ -38,8 +29,9 @@ const Product = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-20">
-        <p className="text-lg">Loading product...</p>
+      <div className="flex flex-col items-center justify-center h-[200px]">
+          <Loader className=" duration-300 animate-spin" />
+          <p>Loading products...</p>
       </div>
     );
   }
@@ -77,14 +69,23 @@ const Product = () => {
 
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-          <p className="text-gray-600 mb-4">{product.desc}</p>
+          <p className="text-gray-600 mb-4 text-sm">{product.description}</p>
           <div className="text-sm my-2.5">
             <span>Quantity: </span>
             <input
               type="number"
               value={1}
-              className="border border-black/30 rounded w-[50px] pl-1"
+              className="border border-black/30 rounded h-[30px] w-[50px] pl-1"
             />
+            <button className="bg-green-500 text-white rounded h-[30px] ml-2.5 px-1 cursor-pointer">update</button>
+          </div>
+          <div className="flex flex-col gap-1 border border-black/25 p-1.5 rounded h-[200px]">
+            <p className="text-sm text-gray-500">Description</p>
+            {product.richDescription === "" && (
+              <div className=" border-t border-t-black/25 w-full flex-1">
+                  <p className="text-red-600 text-sm p-2">No description available for this product.</p>
+              </div>
+            )}
           </div>
           <p className="text-xl font-semibold mb-4">
             GHC {formatCurrency(product.priceCents)}

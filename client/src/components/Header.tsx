@@ -11,9 +11,9 @@ const Header = () => {
       {/* Logo */}
       <div
         onClick={() => navigate("/")}
-        className="text-sm sm:text-lg font-bold tracking-wide text-gray-800"
+        className=" text-gray-800"
       >
-        YOLO<span className="text-blue-600">'s</span> COLLECTION
+        <img src="assets/logo1.png" className="w-[50px]" alt="" />
       </div>
 
       {/* Navigation - Desktop */}

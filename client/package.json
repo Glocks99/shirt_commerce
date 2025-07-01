@@ -11,14 +11,18 @@
     "api": "npx json-server --watch ../db/server.json --port 3001"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
     "json-server": "^1.0.0-beta.3",
     "lucide-react": "^0.513.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.58.1",
     "react-router-dom": "^7.6.2",
-    "tailwindcss": "^4.1.8"
+    "react-toastify": "^11.0.5",
+    "tailwindcss": "^4.1.8",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
